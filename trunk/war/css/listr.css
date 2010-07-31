@@ -1,0 +1,15 @@
+body { margin: 0; padding: 0 }
+
+#menu {
+   height: 52px;
+   padding: 0 5px;
+   border-bottom: 1px solid #ddd;
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
+   z-index: 999999;
+   background: #eee;
+}
+#menu img {padding: 10px; border: 0;}
+#content {position:absolute;top:53px;padding: 0 3px}
