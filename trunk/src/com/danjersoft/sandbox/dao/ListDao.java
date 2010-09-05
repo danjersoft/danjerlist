@@ -10,4 +10,6 @@ public interface ListDao {
 
    void delete(Long listId);
 
+   com.danjersoft.sandbox.model.List getById(Long listId);
+
 }

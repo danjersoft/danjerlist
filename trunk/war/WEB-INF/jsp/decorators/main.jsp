@@ -4,10 +4,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width,user-scalable=no" />
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+<meta name="mobileoptimized" content="0" />
+<link href="/css/ui-lightness/jquery-ui-1.8.4.custom.css" type="text/css" rel="stylesheet">
 <link href="/css/listr.css" type="text/css" rel="stylesheet">
 <title>Listr! - <decorator:title default="Home" /></title>
 <script type="text/javascript" src="/js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="/js/jquery-ui-1.8.4.custom.min.js"></script>
 <decorator:head />
 </head>
 <body>

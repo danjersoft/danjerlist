@@ -11,18 +11,14 @@
       <p style="font-weight: bold">No Lists! You got everything!</p>
    </c:when>
    <c:otherwise>
-      <table>
-         <tbody>
-            <c:forEach items="${lists}" var="list">
-               <tr>
-                  <td>${list.name} (${list.startedOn}) (${list.key})</td>
-                  <td><delete name="${list.name}"><a
-                     href="<c:url value="/listManager/delete/${list.key.id}.htm"/>"><img
-                     src="/img/document_delete.png" /></a></delete></td>
-               </tr>
-            </c:forEach>
-         </tbody>
-      </table>
+      <c:forEach items="${lists}" var="list" varStatus="status">
+         <div class="row <c:if test="${not status.last}">rowBorder</c:if>">
+         <div class="right"><delete name="${list.name}"><a
+            href="<c:url value="/listManager/delete/${list.key.id}.htm"/>"><img
+            src="/img/document_delete.png" /></a></delete></div>
+         <div><a href="/listManager/view/${list.key.id}.htm">${list.name}</a></div>
+         </div>
+      </c:forEach>
    </c:otherwise>
 </c:choose></div>
 </body>

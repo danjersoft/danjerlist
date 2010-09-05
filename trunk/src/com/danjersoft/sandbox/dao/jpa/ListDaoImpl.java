@@ -57,14 +57,27 @@ public class ListDaoImpl extends AbstractJpaDao implements ListDao {
       EntityManager em = emf.createEntityManager();
       try {
          em.getTransaction().begin();
-         com.danjersoft.sandbox.model.List listToDelete = em.find(com.danjersoft.sandbox.model.List.class, KeyFactory
-               .createKey(com.danjersoft.sandbox.model.List.class.getSimpleName(), listId));
+         com.danjersoft.sandbox.model.List listToDelete = em.find(com.danjersoft.sandbox.model.List.class,
+               KeyFactory.createKey(com.danjersoft.sandbox.model.List.class.getSimpleName(), listId));
          em.remove(listToDelete);
          em.getTransaction().commit();
       } catch (Exception e) {
          if ((em != null) && (em.getTransaction() != null)) {
             em.getTransaction().rollback();
          }
+      } finally {
+         if (em != null) {
+            em.close();
+         }
+      }
+   }
+
+   @Override
+   public com.danjersoft.sandbox.model.List getById(Long listId) {
+      EntityManager em = emf.createEntityManager();
+      try {
+         return em.find(com.danjersoft.sandbox.model.List.class,
+               KeyFactory.createKey(com.danjersoft.sandbox.model.List.class.getSimpleName(), listId));
       } finally {
          if (em != null) {
             em.close();

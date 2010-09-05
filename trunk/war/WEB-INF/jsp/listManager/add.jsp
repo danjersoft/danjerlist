@@ -9,7 +9,7 @@
 <form action="<c:url value="/listManager.htm"/>" method="post">
 <p><label for="listName">Name of List</label><br />
 <input id="listName" name="name" required="required" /></p>
-<p><input type="submit" /> <a href="<c:url value="/listManager.htm"/>">Cancel</a></p>
+<p><input type="submit" /> <a href="<c:url value="/"/>">Cancel</a></p>
 </form>
 </div>
 </body>

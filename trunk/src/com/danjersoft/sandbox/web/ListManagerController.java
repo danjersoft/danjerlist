@@ -3,6 +3,7 @@ package com.danjersoft.sandbox.web;
 import java.util.logging.Logger;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,6 +28,25 @@ public class ListManagerController {
       return new ModelAndView().addObject("lists", listService.getLists());
    }
 
+   @RequestMapping(value = "/view/{listId}")
+   public String view(@PathVariable Long listId, Model model) {
+      List list = listService.getListById(listId);
+      model.addAttribute("list", list);
+      model.addAttribute("listItems", listService.getItemsForList(list));
+      model.addAttribute("availableItems", listService.getAvailableItems());
+      return "listManager/view";
+   }
+
+   @RequestMapping(value = "/addItem/{listId}", method = RequestMethod.GET)
+   public String addItemToList(@PathVariable Long listId, Model model) {
+      model.addAttribute("list", listService.getListById(listId));
+      model.addAttribute("items", listService.getAllItems());
+      return "listManager/addItem";
+   }
+
+   /**
+    * Add new List
+    */
    @RequestMapping(value = "/add", method = RequestMethod.GET)
    public void showForm() {}
 
@@ -39,7 +59,6 @@ public class ListManagerController {
    @RequestMapping(value = "/delete/{listId}", method = RequestMethod.GET)
    public String delete(@PathVariable Long listId) {
       log.fine("ListManagerController.delete(): " + listId);
-      System.out.println("ListManagerController.delete()");
       listService.deleteListById(listId);
       return "redirect:/listManager.htm";
    }
