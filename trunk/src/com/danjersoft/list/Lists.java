@@ -25,11 +25,7 @@ public class Lists {
 
    public java.util.List<Item> getAllItems() {
       log.debug("Retrieving all items");
-      java.util.List<Item> allItems = new ListService().getAllItems();
-      for (Item item : allItems) {
-         log.debug("Item: " + item);
-      }
-      return null;
+      return new ListService().getAllItems();
    }
 
    public List addList(List list) {
