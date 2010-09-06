@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>DanjerList</title>
+<style type="text/css" media="screen">
+@import "css/jqtouch.css";
+</style>
+<style type="text/css" media="screen">
+@import "css/themes/jqt/theme.css";
+</style>
+<style type="text/css" media="screen">
+</style>
+<style type="text/css">
+div#jqt .inTheCart span {
+   text-decoration: line-through;
+}
+</style>
+<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="js/jqtouch.js"></script>
+<script type="text/javascript" src="dwr/interface/Lists.js"></script>
+<script type="text/javascript" src="dwr/engine.js"></script>
+<script type="text/javascript">
+var jQT = $.jQTouch({
+   preloadImages: ['/css/themes/jqt/img/loading.gif',
+                   '/css/themes/jqt/img/activeButton.png',
+                   '/css/themes/jqt/img/button.png',
+                   '/css/themes/jqt/img/button_clicked.png',
+                   '/css/themes/jqt/img/back_button.png',
+                   '/css/themes/jqt/img/back_button_clicked.png',
+                   '/css/themes/jqt/img/whiteButton.png']
+});
+var itemCache = {};
+$(function(){
+   function getListRow(list) {
+      return '<li class="arrow"><a href="#showList"><span listId="' + list.id.id + '">' + list.name + '</span></a></li>';
+   }
+   function addList(evObj) {
+      var $el = $('#addList form');
+      // add list to home page after successful ajax call, but only if not cancel
+      if (($(evObj.target).html() != 'Cancel') && ($('#listName', $el).val().length > 1)) {
+         $('#home ul a').unbind('click');
+         $('#addList .whiteButton').addClass('active');
+         var listName = $('#listName', $el).val();
+         var list = { name:listName };
+         Lists.addList(list, function(data) {
+            $('#home ul').append($(getListRow(data)));
+            rebindHome();
+            $('#addList .whiteButton').removeClass('active');
+         });
+      }
+      jQT.goBack();
+      $el.get(0).reset();
+      return false;
+   }
+   function deleteList(evObj) {
+      if (confirm("Delete this list?")) {
+         dwr.engine.beginBatch();
+         Lists.deleteList($('#showList h1 span').attr('listId'));
+         refreshHome();
+         dwr.engine.endBatch();
+      } else {
+         return false;
+      }
+   }
+   function refreshHome() {
+      Lists.getAllLists(function(lists) {
+         $('#homeLoading').show();
+         $('#home ul a').unbind('click');
+         var menu = $('#home ul'); 
+         menu.hide().empty();
+         var list;
+         for (var i = 0; i < lists.length; i++) {
+            list = lists[i];
+            menu.append($(getListRow(list)));
+         }
+         $('#homeLoading').hide();
+         rebindHome();
+         menu.show();
+      });
+      Lists.getAllItems(function(items) {
+         //alert(items);
+      });
+      return false;
+   }
+   function rebindHome() {
+      // Dynamically set next page titles after clicking certain links
+      $('#home ul a').click(function() {
+         $($(this).attr('href') + ' h1' ).html($(this).html());
+         // clear lists
+         var stillNeed = $('#showList .stillNeed');
+         stillNeed.empty();
+         var inTheCart = $('#showList .inTheCart');
+         inTheCart.empty();
+         // load list items
+         var listId = $('#showList h1 span').attr('listId');
+         Lists.getListItems(listId, function(listItems) {
+            var listItem;
+            //alert("total items in list: " + listItems.length);
+            for (var i = 0; i < listItems.length; i++) {
+               listItem = listItems[i];
+               if (new Boolean(listItem.inTheCart)) {
+                  stillNeed.append($('<li><span>' + listItem.item.name + '</span></li>'));
+               } else {
+                  alert(listItem.inTheCart);
+                  inTheCart.append($('<li><span>' + listItem.item.name + '</span></li>'));
+               }
+            }
+         });
+      });
+   }
+   function addListItem() {
+      var $el = $('#showList form');
+      var listItemName = $('#listItem').val();
+      if (listItemName.length > 1) {
+         // add item to db via ajax
+         var listId = $('#showList h1 span').attr('listId');
+         Lists.addListItem(listId, listItemName.toLowerCase(), function(data) {
+            //$('#home ul').append($(getListRow(data)));
+            //rebindHome();
+            //$('#addList .whiteButton').removeClass('active');
+            //alert(data.id.id);
+            // TODO add item to the Still need list
+            $('#showList .stillNeed').append($('<li><span>' + listItemName + '</span></li>'));
+         });
+      }      
+      $el.get(0).reset();
+      //$('#showList .edgetoedge li').click(moveListItem);
+      return false;
+   }
+   function moveListItem() {
+      if ($(this).parent().hasClass('inTheCart')) {
+         // move to Still need list
+         $(this).prependTo('.stillNeed');
+      } else {
+         // move to In the cart list
+         $(this).appendTo('.inTheCart');
+      }
+      //$('#showList .edgetoedge li').click(moveListItem);
+   }
+   $('#refresh').click(refreshHome);
+   $('#addList form').submit(addList);
+   $('#addList .whiteButton, .goback').click(addList);
+   $('#showList .delete').click(deleteList);
+   $('#showList .whiteButton').click(addListItem);
+   $('#showList form').submit(addListItem);
+   $('#showList .edgetoedge li').live('click', moveListItem);
+   // load inital list
+   refreshHome();
+});
+</script>
+</head>
+<body>
+<div id="jqt">
+
+<div id="home" class="edgetoedge">
+<div class="toolbar">
+<a id="refresh" href="#" class="button leftButton">Refresh</a>
+<h1>Lists</h1>
+<a href="#addList" class="button slideup">Add</a></div>
+<ul class="edgetoedge"></ul>
+<div id="homeLoading" class="hidden"><img alt="loading..." src="css/themes/jqt/img/loading.gif"/> Loading Lists...</div>
+</div>
+
+<div id="addList" class="edit">
+<form>
+<div class="toolbar">
+<h1>New List</h1>
+<a href="#" class="button goback">Cancel</a></div>
+<ul class="rounded">
+   <li><input type="text" id="listName" placeholder="Enter your list name..." /></li>
+</ul>
+<a href="#" class="whiteButton" style="margin: 10px">Add</a></form>
+</div>
+
+<div id="showList">
+<div class="toolbar"><a href="#" class="back">Home</a>
+<h1>LISTNAME</h1><a href="#" class="button delete">Delete</a></div>
+<form>
+<ul class="rounded">
+<li><input type="text" id="listItem" placeholder="Item name..."/></li>
+</ul>
+<a href="#" class="whiteButton">Add</a>
+</form>
+<ul class="edgetoedge stillNeed">
+</ul>
+<h4>In the cart</h4>
+<ul class="edgetoedge inTheCart">
+</ul>
+</div>
+
+</div>
+</body>
+</html>

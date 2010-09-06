@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN" "http://getahead.org/dwr/dwr20.dtd">
+<dwr>
+   <allow>
+      <create javascript="Lists" creator="new" scope="script">
+         <param name="class" value="com.danjersoft.list.Lists" />
+      </create>
+      <convert match="com.danjersoft.list.model.List" converter="bean" javascript="List" />
+      <convert match="com.danjersoft.list.model.ListItem" converter="bean" javascript="ListItem" />
+      <convert match="com.danjersoft.list.model.Item" converter="bean" javascript="Item" />
+      <convert match="com.google.appengine.api.datastore.Key" converter="bean" javascript="Key" />
+   </allow>
+</dwr>
