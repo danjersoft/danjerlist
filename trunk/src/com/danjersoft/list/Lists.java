@@ -48,11 +48,13 @@ public class Lists {
       Item item = listService.getItemByName(itemName);
       log.debug("item: " + item);
       ListItem listItem = new ListItem(list, item);
-      log.debug("before: " + listItem);
-      listService.saveList(list);
-      listService.addItemToList(listItem);
-      log.debug("after: " + listItem);
+      listService.addItemToList(list, listItem);
       return listItem;
+   }
+
+   public void moveListItem(long listId, long listItemId) {
+      log.debug("Moving listItem with id of '" + listItemId + "' in list '" + listId + "'");
+      new ListService().moveListItem(listId, listItemId);
    }
 
    public void deleteList(long id) {

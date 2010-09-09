@@ -21,6 +21,7 @@ import com.google.appengine.api.datastore.Key;
  */
 @Entity
 public class ListItem {
+
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Key id;
@@ -73,6 +74,15 @@ public class ListItem {
 
    public Key getId() {
       return id;
+   }
+
+   @Override
+   public Object clone() {
+      ListItem clone = new ListItem();
+      clone.inTheCart = this.inTheCart;
+      clone.addedOn = this.addedOn;
+      // clone.item=this.item;
+      return clone;
    }
 
    @Override
