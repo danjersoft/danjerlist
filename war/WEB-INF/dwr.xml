@@ -5,9 +5,9 @@
       <create javascript="Lists" creator="new" scope="script">
          <param name="class" value="com.danjersoft.list.Lists" />
       </create>
+      <convert match="com.google.appengine.api.datastore.Key" converter="bean" javascript="Key" />
       <convert match="com.danjersoft.list.model.List" converter="bean" javascript="List" />
       <convert match="com.danjersoft.list.model.ListItem" converter="bean" javascript="ListItem" />
       <convert match="com.danjersoft.list.model.Item" converter="bean" javascript="Item" />
-      <convert match="com.google.appengine.api.datastore.Key" converter="bean" javascript="Key" />
    </allow>
 </dwr>

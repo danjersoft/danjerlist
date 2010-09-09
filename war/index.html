@@ -35,18 +35,19 @@ $(function(){
    function getListRow(list) {
       return '<li class="arrow"><a href="#showList"><span listId="' + list.id.id + '">' + list.name + '</span></a></li>';
    }
+   function getListItemRow(listItem) {
+      return '<li><span listItemId=' + listItem.id.id + '>' + listItem.item.name + '</span></li>';
+   }
    function addList(evObj) {
       var $el = $('#addList form');
       // add list to home page after successful ajax call, but only if not cancel
       if (($(evObj.target).html() != 'Cancel') && ($('#listName', $el).val().length > 1)) {
          $('#home ul a').unbind('click');
-         $('#addList .whiteButton').addClass('active');
          var listName = $('#listName', $el).val();
          var list = { name:listName };
          Lists.addList(list, function(data) {
             $('#home ul').append($(getListRow(data)));
             rebindHome();
-            $('#addList .whiteButton').removeClass('active');
          });
       }
       jQT.goBack();
@@ -86,7 +87,6 @@ $(function(){
             }
          }
          itemCache.sort();
-         alert(itemCache);
       });
       return false;
    }
@@ -106,11 +106,10 @@ $(function(){
             //alert("total items in list: " + listItems.length);
             for (var i = 0; i < listItems.length; i++) {
                listItem = listItems[i];
-               if (new Boolean(listItem.inTheCart)) {
-                  stillNeed.append($('<li><span>' + listItem.item.name + '</span></li>'));
+               if (listItem.inTheCart) {
+                  inTheCart.append($(getListItemRow(listItem)));
                } else {
-                  alert(listItem.inTheCart);
-                  inTheCart.append($('<li><span>' + listItem.item.name + '</span></li>'));
+                  stillNeed.append($(getListItemRow(listItem)));
                }
             }
          });
@@ -123,27 +122,26 @@ $(function(){
          // add item to db via ajax
          var listId = $('#showList h1 span').attr('listId');
          Lists.addListItem(listId, listItemName.toLowerCase(), function(data) {
-            //$('#home ul').append($(getListRow(data)));
-            //rebindHome();
-            //$('#addList .whiteButton').removeClass('active');
-            //alert(data.id.id);
             // add item to the Still need list
-            $('#showList .stillNeed').append($('<li><span>' + listItemName + '</span></li>'));
+            $('#showList .stillNeed').append($(getListItemRow(data)));
          });
       }      
       $el.get(0).reset();
-      //$('#showList .edgetoedge li').click(moveListItem);
       return false;
    }
    function moveListItem() {
-      if ($(this).parent().hasClass('inTheCart')) {
-         // move to Still need list
-         $(this).prependTo('.stillNeed');
-      } else {
-         // move to In the cart list
-         $(this).appendTo('.inTheCart');
-      }
-      //$('#showList .edgetoedge li').click(moveListItem);
+      var listId = $('#showList h1 span').attr('listId');
+      var $el = $(this);
+      var listItemId = $el.find('span').attr('listItemId');
+      Lists.moveListItem(listId, listItemId, function() {
+         if ($el.parent().hasClass('inTheCart')) {
+            // move to Still need list
+            $el.prependTo('.stillNeed');
+         } else {
+            // move to In the cart list
+            $el.appendTo('.inTheCart');
+         }
+      });
    }
    function searchItemCache() {
       var text = $(this).val().trim();

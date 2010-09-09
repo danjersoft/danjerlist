@@ -55,6 +55,7 @@ public class List {
 
    public boolean addItem(ListItem listItem) {
       if (items != null) {
+         listItem.setList(this);
          return items.add(listItem);
       } else {
          return false;

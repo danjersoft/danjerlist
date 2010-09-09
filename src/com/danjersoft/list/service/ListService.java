@@ -5,6 +5,7 @@ package com.danjersoft.list.service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
 import org.directwebremoting.util.Logger;
@@ -127,21 +128,31 @@ public class ListService {
       }
    }
 
-   public void addItemToList(ListItem listItem) {
+   public void addItemToList(List list, ListItem listItem) {
       EntityManager em = emf.createEntityManager();
+      EntityTransaction transaction = em.getTransaction();
       try {
+         transaction.begin();
+         em.merge(list);
          em.persist(listItem);
+         transaction.commit();
       } finally {
+         if (transaction.isActive()) {
+            transaction.rollback();
+         }
          if (em != null) {
             em.close();
          }
       }
    }
 
-   public void saveList(List list) {
+   public void moveListItem(long listId, long listItemId) {
       EntityManager em = emf.createEntityManager();
       try {
-         em.merge(list);
+         Key k = KeyFactory.createKey(List.class.getSimpleName(), listId).getChild(ListItem.class.getSimpleName(),
+               listItemId);
+         ListItem listItem = em.find(ListItem.class, k);
+         listItem.setInTheCart(!listItem.isInTheCart());
       } finally {
          if (em != null) {
             em.close();
