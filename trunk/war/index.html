@@ -2,18 +2,19 @@
 <html>
 <head>
 <title>DanjerList</title>
-<style type="text/css" media="screen">
+<style type="text/css" media="screen" >
 @import "css/jqtouch.css";
 </style>
 <style type="text/css" media="screen">
 @import "css/themes/jqt/theme.css";
-</style>
-<style type="text/css" media="screen">
-</style>
-<style type="text/css">
 div#jqt .inTheCart span {
    text-decoration: line-through;
 }
+#jqt ul li input[type="text"] {
+   color: #ddd;
+}
+</style>
+<style type="text/css" media="screen">
 </style>
 <script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
 <script type="text/javascript" src="js/jqtouch.js"></script>
@@ -22,7 +23,8 @@ div#jqt .inTheCart span {
 <script type="text/javascript" src="dwr/util.js"></script>
 <script type="text/javascript">
 var jQT = $.jQTouch({
-   preloadImages: ['/css/themes/jqt/img/loading.gif',
+   preloadImages: ['/css/themes/jqt/img/toolbar.png',
+                   '/css/themes/jqt/img/loading.gif',
                    '/css/themes/jqt/img/activeButton.png',
                    '/css/themes/jqt/img/button.png',
                    '/css/themes/jqt/img/button_clicked.png',
